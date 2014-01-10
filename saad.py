@@ -1,3 +1,27 @@
+# This class provides the functionality we want. You only need to look at
+# this if you want to know how this works. It only needs to be defined
+# once, no need to muck around with its internals.
+class switch(object):
+    def __init__(self, value):
+        self.value = value
+        self.fall = False
+
+    def __iter__(self):
+        """Return the match method once, then stop"""
+        yield self.match
+        raise StopIteration
+    
+    def match(self, *args):
+        """Indicate whether or not to enter a case suite"""
+        if self.fall or not args:
+            return True
+        elif self.value in args: # changed for v1.5, see below
+            self.fall = True
+            return True
+        else:
+            return False
+
+
 # The following example is pretty much the exact use-case of a dictionary,
 # but is included for its simplicity. Note that you can include statements
 # in each suite.
@@ -59,3 +83,6 @@ for case in switch(c):
         break
     if case(): # default
         print "I dunno what c was!"
+
+# Since Pierre's suggestion is backward-compatible with the original recipe,
+# I have made the necessary modification to allow for the above usage.
